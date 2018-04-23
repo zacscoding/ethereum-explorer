@@ -37,7 +37,7 @@ public class BlockConsumer {
         subscribers.add(result);
     }
 
-    public void unsubscribe(DeferredResult<BlockWrapper> result) {
+    public void unsubscribe(DeferredResult<BlockChainDTO> result) {
         subscribers.remove(result);
     }
 
@@ -49,6 +49,7 @@ public class BlockConsumer {
                 try {
                     BlockChainDTO dto = blockQueue.take();
                     log.info("## Take block.. number : {}, #tx : {} ", dto.getBlock().getNumber(), dto);
+                    log.info("## Subscribers : " + subscribers.size());
                     subscribers.forEach(subscriber -> subscriber.setResult(dto));
                 } catch (Exception e) {
                     alive = false;
