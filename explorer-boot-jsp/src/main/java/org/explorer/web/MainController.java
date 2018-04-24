@@ -34,7 +34,7 @@ public class MainController {
 
     @GetMapping(value = "/last-block")
     public ResponseEntity<BlockChainDTO> getLatestBlock() {
-        return ResponseEntity.ok().body(web3jService.getLastBlock());
+        return ResponseEntity.ok().body(web3jService.findLastBlock());
     }
 
     @GetMapping(value = "/subscribe")

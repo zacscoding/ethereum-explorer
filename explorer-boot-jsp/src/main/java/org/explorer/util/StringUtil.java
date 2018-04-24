@@ -7,7 +7,7 @@ package org.explorer.util;
  */
 public class StringUtil {
 
-    public int parseInt(String value, int defaultValue) {
+    public static int parseInt(String value, int defaultValue) {
         try {
             return Integer.parseInt(value);
         } catch (Exception e) {
@@ -15,7 +15,7 @@ public class StringUtil {
         }
     }
 
-    public String getStringIfNumberFormat(String value, String defaultValue) {
+    public static String getStringIfNumberFormat(String value, String defaultValue) {
         try {
             Integer.parseInt(value);
             return value;
