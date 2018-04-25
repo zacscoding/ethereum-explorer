@@ -18,11 +18,9 @@
     var blockDiv = $('#blocks');
     var error = false;
 
-    $.get('http://localhost:8080/last-block', function (block) {
-      console.log('#Receive block : ', block);
-      printBlock(block);
+    (function initTransaction() {
       subscribe();
-    });
+    })();
 
     function subscribe() {
       if (error) {
@@ -30,9 +28,12 @@
       }
 
       $.ajax({
-        url     : 'http://localhost:8080/subscribe',
+        url     : '/subscribe',
         headers : {
           "Content-Type": "application/json"
+        },
+        beforeSend : function() {
+          console.log('waiting for new block..');
         },
         success : function (block) {
           console.log('success', block);

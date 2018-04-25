@@ -42,7 +42,7 @@ public class BlockProducer {
         web3j.blockObservable(true).subscribe(
             (onNext -> {
                 Block block = onNext.getBlock();
-                log.info("## Produce block.. : " + block.getNumber());
+                // log.info("## Produce block.. : " + block.getNumber());
                 blockQueue.add(BlockChainParser.parseBlockDto(block));
             }),
             (onError -> {

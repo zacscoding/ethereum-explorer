@@ -31,6 +31,7 @@ public class BlockWrapper {
     private long timestamp;             // the unix timestamp for when the block was collated
     private List<String> transactions;  // transactions hash list
     private List<String> uncles;        // uncles`s hash list
+    private int txCount;
 
     public BlockWrapper() {
     }

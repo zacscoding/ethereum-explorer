@@ -8,6 +8,7 @@ import org.explorer.entity.BlockWrapper;
 import org.explorer.entity.TransactionWrapper;
 import org.web3j.protocol.core.methods.response.EthBlock.Block;
 import org.web3j.protocol.core.methods.response.Transaction;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Convert.Unit;
 
@@ -71,6 +72,7 @@ public class BlockChainParser {
         wrapper.setExtraData(block.getExtraData());
         wrapper.setSize(block.getSize());
         wrapper.setSha3Uncles(block.getSha3Uncles());
+        wrapper.setTxCount(block.getTransactions().size());
 
         // if u want to wrap more information, then add here
     }
@@ -104,6 +106,7 @@ public class BlockChainParser {
         BigInteger gas = tx.getGas();
         BigInteger gasPrice = tx.getGasPrice();
         String txPrice = Convert.fromWei(gas.multiply(gasPrice).toString(), Unit.ETHER).toPlainString();
+        wrapper.setHash(tx.getHash());
         wrapper.setGas(gas);
         wrapper.setGasPrice(gasPrice);
         wrapper.setTxPrice(txPrice);
@@ -118,5 +121,14 @@ public class BlockChainParser {
         // if u want to wrap more information, then add here
     }
 
+    public static void parseTransactionReceipt(TransactionWrapper tx, TransactionReceipt tr) {
+        if (tx == null || tr == null) {
+            return;
+        }
+
+        tx.setStatus(tr.getStatus());
+        tx.setCumulativeGasUsed(tr.getCumulativeGasUsed());
+        tx.setContractAddress(tr.getContractAddress());
+    }
     // -- endtag : parse transaction
 }

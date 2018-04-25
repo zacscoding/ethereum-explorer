@@ -13,7 +13,17 @@
 
 <script>
   $(function () {
-
+    $.ajax({
+      url     : '/blocks/null/10',
+      type    : "GET",
+      dataType: "json",
+      success : function (data) {
+        console.log('Receive blocks', data);
+      },
+      error   : function (jqxhr) {
+        console.log(jqxhr);
+      }
+    });
   });
 </script>
 

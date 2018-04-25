@@ -6,6 +6,7 @@ import java.util.concurrent.BlockingQueue;
 import lombok.extern.slf4j.Slf4j;
 import org.explorer.dto.BlockChainDTO;
 import org.explorer.entity.BlockWrapper;
+import org.explorer.util.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -48,8 +49,12 @@ public class BlockConsumer {
             while (alive) {
                 try {
                     BlockChainDTO dto = blockQueue.take();
-                    log.info("## Take block.. number : {}, #tx : {} ", dto.getBlock().getNumber(), dto);
-                    log.info("## Subscribers : " + subscribers.size());
+
+                    if(subscribers.size() > 0) {
+                        log.info("## Take block.. number : {}, #tx : {} ", dto.getBlock().getNumber(), CollectionUtil.safeGetSize(dto.getTxns()));
+                        log.info("## Subscribers : " + subscribers.size());
+                    }
+
                     subscribers.forEach(subscriber -> subscriber.setResult(dto));
                 } catch (Exception e) {
                     alive = false;

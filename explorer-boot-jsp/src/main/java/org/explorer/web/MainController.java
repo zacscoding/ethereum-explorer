@@ -6,6 +6,7 @@ import org.explorer.dto.BlockChainDTO;
 import org.explorer.observer.BlockConsumer;
 import org.explorer.service.Web3jService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +35,12 @@ public class MainController {
 
     @GetMapping(value = "/last-block")
     public ResponseEntity<BlockChainDTO> getLatestBlock() {
-        return ResponseEntity.ok().body(web3jService.findLastBlock());
+        try {
+            return ResponseEntity.ok().body(web3jService.findLastBlock());
+        } catch(Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @GetMapping(value = "/subscribe")
