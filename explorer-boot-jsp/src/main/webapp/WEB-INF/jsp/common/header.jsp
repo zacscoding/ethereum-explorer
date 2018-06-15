@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html lang="en">
-<c:set var="context" value="${pageContext.request.contextPath}" />
+<c:set var="context" value="${pageContext.request.contextPath}"/>
 
 <head>
 
@@ -13,7 +13,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Bootstrap Admin Theme</title>
+    <title>Ethereum Explorer</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="${context}/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -39,6 +39,7 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
 
 </head>
 
@@ -76,7 +77,12 @@
                         <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> HOME</a>
                     </li>
                     <li>
-                        <a href="${context}/json-rpc"><i class="fa fa-send"></i> JSON-RPC</a>
+                        <a href="#"><i class="fa fa-slack"></i> JSON-RPC<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="${context}/json-rpc/parity">Parity</a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -93,3 +99,6 @@
     <script src="${context}/resources/vendor/metisMenu/metisMenu.min.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="${context}/resources/dist/js/sb-admin-2.js"></script>
+
+    <!-- handlebars helper -->
+    <script src="${context}/resources/js/handlebars-helper.js"></script>

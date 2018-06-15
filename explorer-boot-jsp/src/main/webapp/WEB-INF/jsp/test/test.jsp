@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<jsp:include page="header.jsp" flush="true"/>
+<jsp:include page="../common/header.jsp" flush="true"/>
 
 <div id="page-wrapper">
     <div class="row">
@@ -18,4 +18,4 @@
   });
 </script>
 
-<jsp:include page="footer.jsp" flush="true"/>
+<jsp:include page="../common/footer.jsp" flush="true"/>

@@ -1,0 +1,89 @@
+[
+  {
+    "module": "web3",
+    "url": "https://wiki.parity.io/JSONRPC-web3-module",
+    "methods": [
+      "web3_clientVersion",
+      "web3_sha3"
+    ]
+  },
+  {
+    "module": "net",
+    "url": "https://wiki.parity.io/JSONRPC-net-module",
+    "methods": [
+      "net_listening",
+      "net_peerCount",
+      "net_version"
+    ]
+  },
+  {
+    "module": "eth",
+    "url": "https://wiki.parity.io/JSONRPC-eth-module",
+    "methods": [
+      "eth_estimategas",
+      "eth_getbalance",
+      "eth_getcode",
+      "eth_gettransactioncount",
+      "eth_getStorageAt",
+      "eth_call",
+      "eth_accounts",
+      "eth_blocknumber",
+      "eth_call",
+      "eth_coinbase",
+      "eth_estimategas",
+      "eth_gasprice",
+      "eth_getbalance",
+      "eth_getblockbyhash",
+      "eth_getBlockByNumber",
+      "eth_getBlockTransactionCountByHash",
+      "eth_getBlockTransactionCountByNumber",
+      "eth_getCode",
+      "eth_getFilterChanges",
+      "eth_getLogs",
+      "eth_getStorageAt",
+      "eth_getTransactionByBlockHashAndIndex",
+      "eth_gettransactionbyblocknumberandindex",
+      "eth_getTransactionByHash",
+      "eth_getTransactionReceipt",
+      "eth_getUncleByBlockHashAndIndex",
+      "eth_getUncleByBlockNumberAndIndex",
+      "eth_getUncleCountByBlockHash",
+      "eth_getUncleCountByBlockNumber",
+      "eth_getWork",
+      "eth_hashrate",
+      "eth_mining",
+      "eth_newBlockFilter",
+      "eth_newPendingTransactionFilter",
+      "eth_protocolVersion",
+      "eth_sendRawTransaction",
+      "eth_sendTransaction",
+      "eth_sign",
+      "eth_signTransaction",
+      "eth_submitHashrate",
+      "eth_submitWork",
+      "eth_syncing",
+      "eth_uninstallFilter"
+    ]
+  },
+  {
+    "module": "eth_pubsub",
+    "url": "https://wiki.parity.io/JSONRPC-Eth-Pub-Sub-Module",
+    "methods": [
+      "eth_subscribe",
+      "eth_unsubscribe"
+    ]
+  },
+  {
+    "module": "personal",
+    "url": "https://wiki.parity.io/JSONRPC-personal-module",
+    "methods": [
+      "personal_listAccounts",
+      "personal_newAccount",
+      "personal_sendTransaction",
+      "personal_signTransaction",
+      "personal_unlockAccount",
+      "personal_sign",
+      "personal_ecRecover"
+    ]
+  }
+]
