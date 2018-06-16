@@ -2,7 +2,9 @@ package org.explorer.service;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,10 +84,10 @@ public class ParityJsonRpcService implements JsonRpcService {
 
     private void initializeJsonSpec() {
         try {
-            Type listType = new TypeToken<ArrayList<JsonRpcSpec>>() {
-            }.getType();
+            Type listType = new TypeToken<ArrayList<JsonRpcSpec>>() {}.getType();
             Gson gson = GsonUtil.GsonFactory.createDefaultGson();
-            jsonRpcSpec = gson.fromJson(new FileReader(new ClassPathResource("parity-json-spec.json").getFile()), listType);
+            // jsonRpcSpec = gson.fromJson(new FileReader(new FileInputStream(new ClassPathResource("parity-json-spec.json"))), listType);
+            jsonRpcSpec = gson.fromJson(new InputStreamReader(new ClassPathResource("parity-json-spec.json").getInputStream()), listType);
         } catch (Exception e) {
             log.error("failed to initialize parity json rpc spec", e);
             System.exit(-1);

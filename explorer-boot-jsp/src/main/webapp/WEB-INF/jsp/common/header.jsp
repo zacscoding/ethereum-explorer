@@ -73,9 +73,9 @@
                         </div>
                         <!-- /input-group -->
                     </li>
-                    <li>
+                    <%--<li>
                         <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> HOME</a>
-                    </li>
+                    </li>--%>
                     <li>
                         <a href="#"><i class="fa fa-slack"></i> JSON-RPC<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">

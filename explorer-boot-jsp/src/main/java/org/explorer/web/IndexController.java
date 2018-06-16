@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Slf4j
 public class IndexController {
 
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/json-rpc/parity";
+    }
+
     @GetMapping("/page-test/{name}")
     public String test(@PathVariable("name") String viewName) {
         return viewName;

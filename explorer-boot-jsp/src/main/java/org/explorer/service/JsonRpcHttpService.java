@@ -13,6 +13,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.explorer.aop.annotation.Elapsed;
 import org.explorer.entity.JsonRequestEntity;
 import org.explorer.util.GsonUtil;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import org.springframework.util.StringUtils;
 @Service
 public class JsonRpcHttpService {
 
+    @Elapsed
     public String request(String uri, String method, Integer id, Object... paramsArray) {
         CloseableHttpClient client = null;
 

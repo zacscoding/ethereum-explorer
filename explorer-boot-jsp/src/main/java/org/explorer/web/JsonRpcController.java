@@ -52,7 +52,7 @@ public class JsonRpcController {
     @PostMapping("/{typeName}/request")
     @ResponseBody
     public ResponseEntity<String> jsonRequest(@PathVariable("typeName") String typeName, @RequestBody JsonRequestEntity jsonRequestEntity) {
-        log.info("## Request json rpc \n" + GsonUtil.toStringPretty(jsonRequestEntity));
+        log.info("## Request json rpc \n" + GsonUtil.toString(jsonRequestEntity));
         String result = null;
         try {
             result = getJsonRpcServiceBeanByTypeName(typeName).jsonRequest(jsonRequestEntity);

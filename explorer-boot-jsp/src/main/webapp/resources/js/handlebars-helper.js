@@ -30,3 +30,68 @@ var handlebarsManager = (function () {
     printTemplate: printTemplate
   }
 })();
+
+Handlebars.registerHelper('compare', function (lvalue, operator, rvalue, expected, options) {
+
+  //{{#compare @index '%' 10}}
+  var operators, result;
+
+  if (arguments.length < 3) {
+    throw new Error("Handlerbars Helper 'compare' needs 2 parameters");
+  }
+
+  if (options === undefined) {
+    options = rvalue;
+    rvalue = operator;
+    operator = "===";
+  }
+
+  if (expected === undefined) {
+    expected = 0;
+  }
+
+  operators = {
+    '=='    : function (l, r) {
+      return l == r;
+    },
+    '==='   : function (l, r) {
+      return l === r;
+    },
+    '!='    : function (l, r) {
+      return l != r;
+    },
+    '!=='   : function (l, r) {
+      return l !== r;
+    },
+    '<'     : function (l, r) {
+      return l < r;
+    },
+    '>'     : function (l, r) {
+      return l > r;
+    },
+    '<='    : function (l, r) {
+      return l <= r;
+    },
+    '>='    : function (l, r) {
+      return l >= r;
+    },
+    'typeof': function (l, r) {
+      return typeof l == r;
+    },
+    '%'     : function (l, r) {
+      return l % r == expected;
+    }
+  };
+
+  if (!operators[operator]) {
+    throw new Error("Handlerbars Helper 'compare' doesn't know the operator " + operator);
+  }
+
+  result = operators[operator](lvalue, rvalue);
+
+  if (result) {
+    return options.fn(this);
+  } else {
+    return options.inverse(this);
+  }
+});

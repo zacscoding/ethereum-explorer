@@ -19,7 +19,7 @@ public class ElapsedCheckerAdvice {
 
     @Around("@annotation(org.explorer.aop.annotation.Elapsed)")
     public Object checkElapsed(ProceedingJoinPoint pjp) throws Throwable {
-        String id = pjp.getTarget().getClass().getSimpleName() + " :: " + pjp.getSignature().getName();
+        String id = pjp.getTarget().getClass().getSimpleName() + "::" + pjp.getSignature().getName();
         long elapsed = 0L;
         boolean isError = false;
 
@@ -36,7 +36,7 @@ public class ElapsedCheckerAdvice {
             if (isError) {
                 log.info("## {} is error occur", id);
             } else {
-                log.info("## {} elapsed : {}", id, TimeUtil.displayElapsedString(elapsed));
+                log.info("## {} - elapsed : {}", id, TimeUtil.displayElapsedString(elapsed));
             }
         }
     }

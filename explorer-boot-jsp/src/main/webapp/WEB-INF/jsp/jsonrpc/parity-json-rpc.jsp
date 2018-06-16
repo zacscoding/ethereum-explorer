@@ -24,7 +24,7 @@
                             <form role="form">
                                 <div class="form-group">
                                     <label>URI</label>
-                                    <input class="form-control" id="uri" value="http://192.168.5.77:8540">
+                                    <input class="form-control" id="uri" value="http://localhost:8540">
                                 </div>
 
                                 <div class="form-group">
@@ -81,6 +81,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     JSON Result &nbsp;&nbsp;&nbsp;
+                    <button type="button" class="btn btn-outline btn-default btn-xs" id="btn-json-result-clear">Clear all</button>
                     <%--<button type="button" class="btn btn-outline btn-default btn-xs result-collapse" data-type="open">open all</button>
                     <button type="button" class="btn btn-outline btn-default btn-xs result-collapse" data-type="close">close all</button>--%>
                 </div>
@@ -95,29 +96,78 @@
         <!-- /.col-lg-12 -->
     </div>
 
-    <!-- json request result -->
-    <div class="row" id="json-result-row" style="display:none;">
+    <!-- json rpc tabs -->
+    <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    JsonRequestResult
+                    JSON RPC SPECS
                 </div>
-                <!-- panel body -->
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-lg-9">
-                            <button type="button" class="btn btn-default">Expand</button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12" id="json-result-div"></div>
-                    </div>
-                </div>
-            </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body" id="json-rpc-specs-tab-body">
+                </div> <!-- /.panel-body -->
+
+            </div> <!-- /.panel -->
         </div>
-    </div>
-    <!-- ./ json request result -->
+    </div> <!-- ./json rpc tabs -->
 </div>
+
+<script id="json-rpc-tabs-template" type="text/x-handlebars-template">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab-all" data-toggle="tab">ALL</a>
+        {{#each .}}
+        <li><a href="#tab-{{module}}" data-toggle="tab">{{module}}</a>
+        {{/each}}
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <!-- all -->
+        <div class="tab-pane fade in active" id="tab-all">
+            {{#each .}}
+            <h4>{{module}}</h4>
+            <table border="0" style="width : 100%;">
+                {{#each methods}}
+                    {{#compare @index '%' 3 0}}<tr>{{/compare}}
+                    <td style="width:33%;">
+                        <a href="#" class="tab-method" data-module="{{../module}}" data-method="{{this}}">
+                            {{this}}
+                        </a>
+                    </td>
+                    {{#compare @index '%' 3 2}}</tr>{{/compare}}
+                {{/each}}
+
+                {{#compare methods.length '%' 3 1}}
+                <td style="width:33%;"></td><td style="width:33%;"></td></tr>
+                {{/compare}}
+                {{#compare methods.length '%' 3 2}}
+                <td style="width:33%;"></td>
+                </tr>
+                {{/compare}}
+            </table>
+            {{/each}}
+        </div>
+
+        <!-- each modules -->
+        {{#each .}}
+        <div class="tab-pane fade" id="tab-{{module}}">
+            <h4>{{module}}</h4>
+            <table border="0" style="width : 100%;">
+            {{#each methods}}
+                {{#compare @index '%' 3 0}}<tr>{{/compare}}
+                <td>
+                    <a href="#" class="tab-method" data-module="{{../module}}" data-method="{{this}}">
+                        {{this}}
+                    </a>
+                </td>
+                {{#compare @index '%' 3 2}}</tr>{{/compare}}
+            {{/each}}
+            </table>
+        </div>
+        {{/each}}
+    </div>
+</script>
 
 <script id="module-select-template" type="text/x-handlebars-template">
     <label>Modules</label>
@@ -143,7 +193,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{resultSeq}}">{{jsonRequest}}</a>
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{resultSeq}}">{{resultSeq}} - {{jsonRequest}}</a>
             </h4>
         </div>
         <div id="collapse{{resultSeq}}" class="panel-collapse collapse in">
@@ -202,6 +252,7 @@
       var selected = $(this).val();
       method = selected;
       if (!selected) {
+        changeDisplay(moduleWikiObj, 'none');
         changeDisplay(methodWikiObj, 'none');
         methodWikiObj.data('url', '');
         return;
@@ -264,7 +315,26 @@
       });
     });
 
-    $(document).on('click', '.result-collapse', function () {
+    // json rpc tab list click
+    $(document).on('click', '.tab-method', function (e) {
+      e.preventDefault();
+      var selectedModule = $(this).data('module');
+      var selectedMethod = $(this).data('method');
+
+      $('#module-select').val(selectedModule).trigger('change');
+      $('#method-select').val(selectedMethod).trigger('change');
+
+      var offset = $(".page-header").offset();
+      $('html, body').animate({scrollTop : offset.top}, 400);
+    });
+
+    $(document).on('click', ('#btn-json-result-clear'), function () {
+      jsonResultSeq = 0;
+      jsonResultDivObj.empty();
+    });
+
+    // TODO :: open or close all collapse
+    /*$(document).on('click', '.result-collapse', function () {
       var type = $(this).data('type');
       if (type == 'open') {
         $('.panel-collapse').each(function () {
@@ -277,11 +347,15 @@
       } else {
         return;
       }
-    });
+    });*/
 
     (function () {
       $.getJSON("${context}/json-rpc/parity/specs", function (data) {
         jsonRpcSpecs = data;
+        console.log(data);
+        // display json rpc spec tabs
+        handlebarsManager.printTemplate(jsonRpcSpecs, $('#json-rpc-specs-tab-body'), $('#json-rpc-tabs-template'), 'append', null, null, true);
+        // display modules select box
         appendModuleSelect(data);
       });
     })();
