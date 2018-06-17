@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
+ * TEMP CLASS
+ *
  * @author zacconding
  * @Date 2018-06-13
  * @GitHub : https://github.com/zacscoding
@@ -22,6 +24,6 @@ public class IndexController {
 
     @GetMapping("/page-test/{name}")
     public String test(@PathVariable("name") String viewName) {
-        return viewName;
+        return "test/" + viewName;
     }
 }

@@ -32,7 +32,6 @@ var handlebarsManager = (function () {
 })();
 
 Handlebars.registerHelper('compare', function (lvalue, operator, rvalue, expected, options) {
-
   //{{#compare @index '%' 10}}
   var operators, result;
 
@@ -84,7 +83,8 @@ Handlebars.registerHelper('compare', function (lvalue, operator, rvalue, expecte
   };
 
   if (!operators[operator]) {
-    throw new Error("Handlerbars Helper 'compare' doesn't know the operator " + operator);
+    throw new Error("Handlerbars Helper 'compare' doesn't know the operator "
+        + operator);
   }
 
   result = operators[operator](lvalue, rvalue);
@@ -93,5 +93,38 @@ Handlebars.registerHelper('compare', function (lvalue, operator, rvalue, expecte
     return options.fn(this);
   } else {
     return options.inverse(this);
+  }
+});
+
+Handlebars.registerHelper('displayGasUsage', function (blockInfo) {
+  return (blockInfo.gasUsed / blockInfo.gasLimit * 100) + '%';
+});
+
+Handlebars.registerHelper('displayDifficulty', function (difficulty) {
+  if (!difficulty) {
+    return '';
+  }
+
+  // TODO :: CONVERT UNIT OR COMMA
+  return difficulty.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+});
+
+Handlebars.registerHelper('getLength', function (data, defaultValue) {
+  if (!data) {
+    return defaultValue;
+  }
+
+  return data.length;
+});
+
+Handlebars.registerHelper('displayTimestamp', function (timestamp, type) {
+  if (!timestamp) {
+    return '';
+  }
+
+  if (type == 'short') {
+    return moment.unix(timestamp).fromNow();
+  } else if (type == 'long') {
+    return new Handlebars.SafeString(''+ moment.unix(timestamp).format('YYYY.MM.DD HH:mm:ss') + '+UTC  ('+ moment.unix(timestamp).fromNow() + ')');
   }
 });

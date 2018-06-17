@@ -1,6 +1,8 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <jsp:include page="../common/header.jsp" flush="true"/>
+<c:set var="context" value="${pageContext.request.contextPath}"/>
 
 <div id="page-wrapper">
     <div class="row">
@@ -15,7 +17,7 @@
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    Server Information
+                    JSON RPC Request
                 </div>
                 <!-- panel body -->
                 <div class="panel-body">
@@ -101,7 +103,7 @@
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    JSON RPC SPECS
+                    PARITY JSON RPC APIS
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body" id="json-rpc-specs-tab-body">

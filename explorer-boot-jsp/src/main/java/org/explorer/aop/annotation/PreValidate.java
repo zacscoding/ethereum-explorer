@@ -6,14 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Will display method elapsed time
+ * Maker for checking before validation
  *
  * @author zacconding
- * @Date 2018-06-15
+ * @Date 2018-06-17
  * @GitHub : https://github.com/zacscoding
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Elapsed {
-
+public @interface PreValidate {
 }

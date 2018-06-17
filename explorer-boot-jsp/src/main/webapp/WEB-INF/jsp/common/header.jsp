@@ -21,12 +21,6 @@
     <!-- MetisMenu CSS -->
     <link href="${context}/resources/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 
-    <!-- DataTables CSS -->
-    <link href="${context}/resources/vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
-
-    <!-- DataTables Responsive CSS -->
-    <link href="${context}/resources/vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
-
     <!-- Custom CSS -->
     <link href="${context}/resources/dist/css/sb-admin-2.css" rel="stylesheet">
 
@@ -73,6 +67,14 @@
                         </div>
                         <!-- /input-group -->
                     </li>
+                    <li>
+                        <a href="#"><i class="fa fa-dashboard fa-fw"></i>Blockchain<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="${context}/blocks">Blocks</a>
+                            </li>
+                        </ul>
+                    </li>
                     <%--<li>
                         <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> HOME</a>
                     </li>--%>
@@ -100,5 +102,10 @@
     <!-- Custom Theme JavaScript -->
     <script src="${context}/resources/dist/js/sb-admin-2.js"></script>
 
-    <!-- handlebars helper -->
+    <!-- handlebars -->
     <script src="${context}/resources/js/handlebars-helper.js"></script>
+
+    <!-- moment -->
+    <script src="${context}/resources/js/moment.js"></script>
+
+    <script src="${context}/resources/js/bignumber.js"></script>

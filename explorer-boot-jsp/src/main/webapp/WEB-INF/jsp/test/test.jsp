@@ -3,18 +3,14 @@
 <jsp:include page="../common/header.jsp" flush="true"/>
 
 <div id="page-wrapper">
-    <div class="row">
-        <div class="col-lg-12">
-            <h1 class="page-header">Sample Content</h1>
-        </div>
-        <!-- /.col-lg-12 -->
+    <div class="row" class="temp">
     </div>
     <!-- /.row -->
 </div>
 
 <script>
   $(function () {
-    alert('${context}');
+
   });
 </script>
 
