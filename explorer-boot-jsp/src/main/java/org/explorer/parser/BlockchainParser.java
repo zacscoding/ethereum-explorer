@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.explorer.dto.BlockchainDTO;
 import org.explorer.entity.BlockWrapper;
@@ -78,6 +79,7 @@ public class BlockchainParser {
         wrapper.setExtraData(block.getExtraData());
         wrapper.setSize(block.getSize());
         wrapper.setSha3Uncles(block.getSha3Uncles());
+        wrapper.setSealFields(block.getSealFields());
         wrapper.setTxCount(block.getTransactions().size());
 
         if (CollectionUtils.isEmpty(block.getTransactions())) {
@@ -95,6 +97,24 @@ public class BlockchainParser {
 
         // if u want to wrap more information, then add here
     }
+
+    public static void parseBlock(Map<String, Object> blockMap, BlockWrapper wrapper) {
+        String parentHashVal = (String)blockMap.get("parentHash");
+        String unclesHashVal = (String)blockMap.get("sha3Uncles");
+        String coinbaseVal = (String)blockMap.get("miner");
+        String stateRootVal = (String) blockMap.get("stateRoot");
+        String txTrieRootVal = (String) blockMap.get("transactionsRoot");
+        String receiptRootVal = (String) blockMap.get("receiptsRoot");
+
+        String logsBloomVal = (String) blockMap.get("logsBloom");
+        String difficultyVal = (String) blockMap.get("difficulty");
+        String gasLimitVal = (String) blockMap.get("gasLimit");
+        String gasUsedHexVal = (String) blockMap.get("gasUsed");
+        System.out.println(gasUsedHexVal);
+        String timestampHexVal = (String) blockMap.get("timestamp");
+        String extraDataVal = (String)blockMap.get("extraData");
+    }
+
     // -- end tag : parse block
 
     // tag : parse transaction

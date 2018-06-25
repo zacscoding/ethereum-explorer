@@ -19,7 +19,7 @@ public class IndexController {
 
     @GetMapping("/")
     public String home() {
-        return "redirect:/json-rpc/parity";
+        return "redirect:/blocks";
     }
 
     @GetMapping("/page-test/{name}")

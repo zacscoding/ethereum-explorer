@@ -118,8 +118,8 @@ Handlebars.registerHelper('getLength', function (data, defaultValue) {
 });
 
 Handlebars.registerHelper('displayTimestamp', function (timestamp, type) {
-  if (!timestamp) {
-    return '';
+  if (!timestamp || timestamp == 0) {
+    return '-';
   }
 
   if (type == 'short') {
@@ -127,4 +127,17 @@ Handlebars.registerHelper('displayTimestamp', function (timestamp, type) {
   } else if (type == 'long') {
     return new Handlebars.SafeString(''+ moment.unix(timestamp).format('YYYY.MM.DD HH:mm:ss') + '+UTC  ('+ moment.unix(timestamp).fromNow() + ')');
   }
+});
+
+Handlebars.registerHelper('displaySealfields', function (sealFields) {
+  if (!sealFields) {
+    return '';
+  }
+  var ret = '';
+
+  for (var i = 0; i < sealFields.length; i++) {
+    ret += sealFields[i] + '<br/>';
+  }
+
+  return ret;
 });

@@ -16,7 +16,6 @@ import org.web3j.protocol.core.methods.response.EthBlock.Block;
 @Getter
 @Setter
 public class BlockWrapper {
-
     private String hash;                // 32 bytes hash of the block
     private BigInteger number;          // block number
     private String parentHash;          // 32 Bytes - hash of the parent block
@@ -31,6 +30,7 @@ public class BlockWrapper {
     private long timestamp;             // the unix timestamp for when the block was collated
     private List<String> transactions;  // transactions hash list
     private List<String> uncles;        // uncles`s hash list
+    private List<String> sealFields;    // seal fields
     private int txCount;
 
     public BlockWrapper() {

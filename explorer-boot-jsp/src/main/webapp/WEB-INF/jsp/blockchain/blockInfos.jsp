@@ -128,6 +128,10 @@
                             <th>Size:</th>
                             <th>{{block.size}} bytes</th>
                         </tr>
+                        <tr>
+                            <th>SealFields:</th>
+                            <th colspan="100%">{{#displaySealfields block.sealFields}}{{/displaySealfields}}</th>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -185,7 +189,12 @@
     });
 
     (function () {
-      subscribeNewBlocks();
+      var url = '${context}/blocks/is-subscribe';
+      $.getJSON(url, function (data) {
+        if (data == true) {
+          subscribeNewBlocks();
+        }
+      });
       displayBlockInfos();
     })();
 

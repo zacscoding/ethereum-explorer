@@ -1,18 +1,15 @@
 package org.explorer.service;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.explorer.entity.BlockWrapper;
 import org.explorer.entity.PageListRequest;
+import org.explorer.repository.BlockchainRepository;
 import org.explorer.util.BIUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameter;
-import org.web3j.protocol.core.methods.response.EthBlock.Block;
 
 /**
  * @author zacconding
@@ -24,11 +21,23 @@ import org.web3j.protocol.core.methods.response.EthBlock.Block;
 public class BlockchainService {
 
     @Autowired
-    private Web3j web3j;
+    private BlockchainRepository blockchainRepository;
+    private String clientVersion;
+
+    // tag ethereum client info
+    public String getClientVersion() throws Exception {
+        if(clientVersion == null) {
+            clientVersion = blockchainRepository.getClientVersion();
+        }
+
+        return clientVersion;
+    }
+
+    // -- tag ethereum client info
 
     // tag block
     public BigInteger findBestBlockNumber() throws Exception {
-        return web3j.ethBlockNumber().send().getBlockNumber();
+        return blockchainRepository.findBestBlockNumber();
     }
 
     public List<BlockWrapper> findAllBlocks(PageListRequest pageRequest) throws Exception {
@@ -48,32 +57,8 @@ public class BlockchainService {
         }
 
         log.debug("## best block number : {}, start : {} - last : {}", bestBlockNumber, startBlockNumber, lastBlockNumber);
-        return findAllBlock(startBlockNumber, lastBlockNumber);
-    }
-
-    /**
-     * 1) startBlockNum <= x <= lastBlockNum
-     * 2) startBlockNum >= x >= lastBlockNum
-     * => will be added in list from startBlockNum to lastBlockNum
-     */
-    public List<BlockWrapper> findAllBlock(BigInteger startBlockNum, BigInteger lastBlockNum) throws Exception {
-        log.info("# request find all blocks startBlockNum : {}, lastBlockNum : {}", startBlockNum, lastBlockNum);
-        int diff = (startBlockNum.compareTo(lastBlockNum) > 0) ? -1 : 1;
-
-        int size = Math.abs(lastBlockNum.subtract(startBlockNum).intValue()) + 1;
-        if (size == 0) {
-            size = 1;
-        }
-
-        List<BlockWrapper> blocks = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
-            BigInteger number = lastBlockNum.subtract(BigInteger.valueOf(i * diff));
-            log.info("" + number.toString(10));
-            Block block = web3j.ethGetBlockByNumber(DefaultBlockParameter.valueOf(number), false).send().getBlock();
-            blocks.add(new BlockWrapper(block));
-        }
-
-        return blocks;
+        return blockchainRepository.findAllBlocks(startBlockNumber, lastBlockNumber);
     }
     // --tag block
+
 }

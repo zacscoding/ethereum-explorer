@@ -91,8 +91,8 @@
     ]
   },
   {
-    "module": "parity_accounts",
-    "url": "https://wiki.parity.io/JSONRPC-parity_accounts-module",
+    "module": "parity",
+    "url": "https://wiki.parity.io/JSONRPC-parity-module",
     "methods": [
       "parity_cidV0",
       "parity_composeTransaction",
@@ -158,8 +158,8 @@
     ]
   },
   {
-    "module": "parity_set",
-    "url": "https://wiki.parity.io/JSONRPC-parity_set-module",
+    "module": "parity_accounts",
+    "url": "https://wiki.parity.io/JSONRPC-parity_accounts-module",
     "methods": [
       "parity_allAccountsInfo",
       "parity_changePassword",
@@ -185,6 +185,29 @@
       "parity_setNewDappsAddresses",
       "parity_setNewDappsDefaultAddress",
       "parity_testPassword"
+    ]
+  },
+  {
+    "module": "parity_set",
+    "url": "https://wiki.parity.io/JSONRPC-parity_set-module",
+    "methods": [
+      "parity_acceptNonReservedPeers",
+      "parity_addReservedPeer",
+      "parity_dappsList",
+      "parity_dropNonReservedPeers",
+      "parity_executeUpgrade",
+      "parity_hashContent",
+      "parity_removeReservedPeer",
+      "parity_setAuthor",
+      "parity_setChain",
+      "parity_setExtraData",
+      "parity_setGasCeilTarget",
+      "parity_setGasFloorTarget",
+      "parity_setMaxTransactionGas",
+      "parity_setMinGasPrice",
+      "parity_setMode",
+      "parity_setTransactionsLimit",
+      "parity_upgradeReady"
     ]
   },
   {

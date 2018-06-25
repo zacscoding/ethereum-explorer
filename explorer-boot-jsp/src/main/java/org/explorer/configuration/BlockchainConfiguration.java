@@ -1,5 +1,7 @@
 package org.explorer.configuration;
 
+import java.io.IOException;
+import java.rmi.server.ExportException;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -26,6 +28,7 @@ public class BlockchainConfiguration {
 
     @Value("${eth.json.url}")
     private String jsonRpcUrl;
+    private String clientVersion;
 
     @Autowired
     private TaskExecutor eventHandlerExecutor;
@@ -53,12 +56,21 @@ public class BlockchainConfiguration {
         return new BlockNotificationListener();
     }
 
+    public String getJsonRpcUrl() {
+        return jsonRpcUrl;
+    }
+
+    public String getClientVersion() {
+        return clientVersion;
+    }
+
     private void blockObserve(Web3j web3j, List<BlockEventListener> blockEventListeners) {
         log.info("## Start to subscribe block event. listener : {}", blockEventListeners.size());
 
         if (!CollectionUtils.isEmpty(blockEventListeners)) {
             web3j.blockObservable(true).subscribe(
                 (onNext -> {
+                    log.info("## receive new block {}({})", onNext.getBlock().getNumber().toString(10), onNext.getBlock().getHash());
                     blockEventListeners.forEach(listener -> eventHandlerExecutor.execute(() -> listener.onBlock(onNext)));
                 }),
                 (onError -> {

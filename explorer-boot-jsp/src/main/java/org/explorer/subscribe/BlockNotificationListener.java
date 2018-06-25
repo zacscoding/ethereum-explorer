@@ -25,7 +25,11 @@ public class BlockNotificationListener extends BlockEventListenrAdapter {
     @Override
     public void onBlock(EthBlock ethBlock) {
         BlockchainDTO dto = BlockchainParser.parseBlockDto(ethBlock.getBlock());
-        subscribers.forEach(subscriber -> subscriber.setResult(dto));
+        subscribers.forEach(subscriber -> {
+            if (subscriber != null && !subscriber.isSetOrExpired()) {
+                subscriber.setResult(dto);
+            }
+        });
     }
 
     public void subscribe(DeferredResult<BlockchainDTO> result) {
