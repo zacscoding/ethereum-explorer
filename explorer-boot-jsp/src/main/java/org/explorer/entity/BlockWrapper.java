@@ -28,6 +28,11 @@ public class BlockWrapper {
     private BigInteger gasLimit;        // the maximum gas allowed in this block.
     private BigInteger gasUsed;         // the total used gas by all transactions in this block.
     private long timestamp;             // the unix timestamp for when the block was collated
+    private String receiptRoot;
+    private String stateRoot;
+    private String transactionsRoot;
+    private String logsBloom;
+    private String mixHash;
     private List<String> transactions;  // transactions hash list
     private List<String> uncles;        // uncles`s hash list
     private List<String> sealFields;    // seal fields

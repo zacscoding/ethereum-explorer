@@ -23,10 +23,10 @@ public class TransactionWrapper {
     private BigInteger transactionIndex;    // integer of the transactions index position in the block
     private String from;                    // 20 Bytes - address of the sender (Berith의 경우 파싱 해서 길이 달라짐)
     private String to;                      // 20 Bytes - address of the receiver (Berith의 경우 파싱 해서 길이 달라짐)
-    private BigInteger value;               // value transferred in Wei
-    private BigInteger gasPrice;                // gas price provided by the sender in GWei
+    private String value;                   // value transferred in Eth
+    private BigInteger gasPrice;            // gas price provided by the sender in GWei
     private BigInteger gas;                 // gas provided by the sender
-    private String txPrice;                 // transaction fee : (gas * gasPrice) / 1000000000000000000, where gas unit is WEI
+    private String txPrice;                 // transaction fee : (gas * gasPrice) / 1000000000000000000 ETH, where gas unit is WEI
     private String input;                   // the data sent along with the transaction
     private long timestamp;                 // tx timestamp(==block timestamp)
     private BigInteger gasLimit;            // the maximum gas allowed in this block.

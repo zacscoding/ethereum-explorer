@@ -4,12 +4,14 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.explorer.dto.BlockchainDTO;
 import org.explorer.entity.BlockWrapper;
 import org.explorer.entity.PageListRequest;
 import org.explorer.repository.BlockchainRepository;
 import org.explorer.util.BIUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.web3j.protocol.core.methods.response.EthBlock.Block;
 
 /**
  * @author zacconding
@@ -26,7 +28,7 @@ public class BlockchainService {
 
     // tag ethereum client info
     public String getClientVersion() throws Exception {
-        if(clientVersion == null) {
+        if (clientVersion == null) {
             clientVersion = blockchainRepository.getClientVersion();
         }
 
@@ -59,6 +61,20 @@ public class BlockchainService {
         log.debug("## best block number : {}, start : {} - last : {}", bestBlockNumber, startBlockNumber, lastBlockNumber);
         return blockchainRepository.findAllBlocks(startBlockNumber, lastBlockNumber);
     }
-    // --tag block
 
+    /**
+     * @param query block number decimal > hex string || block hash
+     */
+    public BlockchainDTO findOneBlock(String query) throws Exception {
+        try {
+            return blockchainRepository.findOneBlockByNumber(new BigInteger(query), true);
+        } catch (NumberFormatException e) {
+            try {
+                return blockchainRepository.findOneBlockByNumber(new BigInteger(query, 16), true);
+            } catch (NumberFormatException e2) {
+                return blockchainRepository.findOneBlockByHash(query, true);
+            }
+        }
+    }
+    // --tag block
 }

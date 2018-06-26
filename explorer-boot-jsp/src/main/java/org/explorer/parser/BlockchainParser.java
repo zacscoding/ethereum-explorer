@@ -79,7 +79,12 @@ public class BlockchainParser {
         wrapper.setExtraData(block.getExtraData());
         wrapper.setSize(block.getSize());
         wrapper.setSha3Uncles(block.getSha3Uncles());
+        wrapper.setReceiptRoot(block.getReceiptsRoot());
+        wrapper.setStateRoot(block.getStateRoot());
+        wrapper.setTransactionsRoot(block.getTransactionsRoot());
+        wrapper.setLogsBloom(block.getLogsBloom());
         wrapper.setSealFields(block.getSealFields());
+        wrapper.setMixHash(block.getMixHash());
         wrapper.setTxCount(block.getTransactions().size());
 
         if (CollectionUtils.isEmpty(block.getTransactions())) {
@@ -110,7 +115,6 @@ public class BlockchainParser {
         String difficultyVal = (String) blockMap.get("difficulty");
         String gasLimitVal = (String) blockMap.get("gasLimit");
         String gasUsedHexVal = (String) blockMap.get("gasUsed");
-        System.out.println(gasUsedHexVal);
         String timestampHexVal = (String) blockMap.get("timestamp");
         String extraDataVal = (String)blockMap.get("extraData");
     }
@@ -154,7 +158,12 @@ public class BlockchainParser {
         wrapper.setInput(tx.getInput());
         wrapper.setNonce(tx.getNonce());
         wrapper.setTransactionIndex(tx.getTransactionIndex());
-        wrapper.setValue(tx.getValue());
+        System.out.println(tx.getValue());
+        if(tx.getValue().equals(BigInteger.ZERO)) {
+            wrapper.setValue("0");
+        } else {
+            wrapper.setValue(Convert.fromWei(tx.getValue().toString(), Unit.ETHER).toPlainString());
+        }
 
         // if u want to wrap more information, then add here
     }

@@ -3,9 +3,12 @@ package org.explorer.repository;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import org.explorer.dto.BlockchainDTO;
 import org.explorer.entity.BlockWrapper;
+import org.explorer.parser.BlockchainParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.methods.response.EthBlock.Block;
@@ -48,5 +51,29 @@ public class JsonRpcBlockchainRepository implements BlockchainRepository {
         }
 
         return blocks;
+    }
+
+    @Override
+    public BlockchainDTO findOneBlockByNumber(BigInteger blockNumber, boolean includeTxns) throws Exception {
+        Block block = null;
+
+        if (blockNumber != null) {
+            block = web3j.ethGetBlockByNumber(DefaultBlockParameter.valueOf(blockNumber), includeTxns).send().getBlock();
+        }
+
+        System.out.println("block : " + block);
+
+        return block != null ? BlockchainParser.parseBlockDto(block) : null;
+    }
+
+    @Override
+    public BlockchainDTO findOneBlockByHash(String blockHash, boolean includeTxns) throws Exception {
+        Block block = null;
+
+        if(StringUtils.hasText(blockHash)) {
+            block = web3j.ethGetBlockByHash(blockHash, includeTxns).send().getBlock();
+        }
+
+        return block != null ? BlockchainParser.parseBlockDto(block) : null;
     }
 }

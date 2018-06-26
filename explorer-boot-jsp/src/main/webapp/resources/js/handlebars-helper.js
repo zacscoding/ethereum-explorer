@@ -141,3 +141,16 @@ Handlebars.registerHelper('displaySealfields', function (sealFields) {
 
   return ret;
 });
+
+Handlebars.registerHelper('', function (sealFields) {
+  if (!sealFields) {
+    return '';
+  }
+  var ret = '';
+
+  for (var i = 0; i < sealFields.length; i++) {
+    ret += sealFields[i] + '<br/>';
+  }
+
+  return ret;
+});

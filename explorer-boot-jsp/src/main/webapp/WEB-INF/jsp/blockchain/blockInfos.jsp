@@ -146,8 +146,8 @@
 <script id="block-infos-template" type="text/x-handlebars-template">
     {{#each .}}
     <tr>
-        <td><a href="#">{{number}}</a></td>
-        <td><a href="#">{{hash}}</a></td>
+        <td><a href="block/{{number}}">{{number}}</a></td>
+        <td><a href="block/{{hash}}">{{hash}}</a></td>
         <td>{{#displayDifficulty difficulty}}{{/displayDifficulty}}</td>
         <td>{{miner}}</td>
         <td>{{#displayGasUsage this}}{{/displayGasUsage}}</td>
