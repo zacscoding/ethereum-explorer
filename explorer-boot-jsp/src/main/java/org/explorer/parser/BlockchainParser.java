@@ -1,5 +1,6 @@
 package org.explorer.parser;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,6 +13,7 @@ import org.explorer.entity.TransactionWrapper;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.web3j.protocol.core.methods.response.EthBlock.Block;
+import org.web3j.protocol.core.methods.response.EthBlock.TransactionResult;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.utils.Convert;
@@ -32,12 +34,26 @@ public class BlockchainParser {
         BlockWrapper blockWrapper = new BlockWrapper(block);
         dto.setBlock(blockWrapper);
 
-        if (block.getTransactions() != null) {
+        if (!CollectionUtils.isEmpty(block.getTransactions())) {
+
             List<TransactionWrapper> txns = new ArrayList<>(block.getTransactions().size());
-            block.getTransactions().forEach(tx -> {
-                txns.add(new TransactionWrapper((Transaction) tx.get()));
-            });
-            dto.setTxns(txns);
+            BigDecimal blockTxFees = new BigDecimal(0);
+
+            if (block.getTransactions().get(0) instanceof Transaction) {
+                for (TransactionResult tx : block.getTransactions()) {
+                    TransactionWrapper txWrapper = new TransactionWrapper((Transaction) tx.get());
+                    txns.add(txWrapper);
+                    String txPriceVal = txWrapper.getTxPrice();
+                    if (StringUtils.hasText(txPriceVal)) {
+                        blockTxFees = blockTxFees.add(new BigDecimal(txPriceVal));
+                    }
+                }
+
+                blockWrapper.setTxFees(blockTxFees.toPlainString());
+                dto.setTxns(txns);
+            }
+        } else {
+            blockWrapper.setTxFees("0");
         }
 
         return dto;
@@ -68,9 +84,11 @@ public class BlockchainParser {
         wrapper.setGasLimit(block.getGasLimit());
         wrapper.setGasUsed(block.getGasUsed());
         String nonceRaw = block.getNonceRaw();
+
         if (StringUtils.hasText(nonceRaw)) {
             wrapper.setNonce(block.getNonce());
         }
+
         wrapper.setDifficulty(block.getDifficulty().toString(10));
         wrapper.setGasLimit(block.getGasLimit());
         wrapper.setNumber(block.getNumber());
@@ -104,9 +122,9 @@ public class BlockchainParser {
     }
 
     public static void parseBlock(Map<String, Object> blockMap, BlockWrapper wrapper) {
-        String parentHashVal = (String)blockMap.get("parentHash");
-        String unclesHashVal = (String)blockMap.get("sha3Uncles");
-        String coinbaseVal = (String)blockMap.get("miner");
+        String parentHashVal = (String) blockMap.get("parentHash");
+        String unclesHashVal = (String) blockMap.get("sha3Uncles");
+        String coinbaseVal = (String) blockMap.get("miner");
         String stateRootVal = (String) blockMap.get("stateRoot");
         String txTrieRootVal = (String) blockMap.get("transactionsRoot");
         String receiptRootVal = (String) blockMap.get("receiptsRoot");
@@ -116,7 +134,7 @@ public class BlockchainParser {
         String gasLimitVal = (String) blockMap.get("gasLimit");
         String gasUsedHexVal = (String) blockMap.get("gasUsed");
         String timestampHexVal = (String) blockMap.get("timestamp");
-        String extraDataVal = (String)blockMap.get("extraData");
+        String extraDataVal = (String) blockMap.get("extraData");
     }
 
     // -- end tag : parse block
@@ -142,6 +160,13 @@ public class BlockchainParser {
         } else {
             wrapper.setBlockHash(tx.getBlockHash());
             wrapper.setBlockNumber(tx.getBlockNumber());
+            wrapper.setTransactionIndex(tx.getTransactionIndex());
+
+            if (tx.getValue().equals(BigInteger.ZERO)) {
+                wrapper.setValue("0");
+            } else {
+                wrapper.setValue(Convert.fromWei(tx.getValue().toString(), Unit.ETHER).toPlainString());
+            }
         }
 
         // calculate tx price
@@ -157,14 +182,6 @@ public class BlockchainParser {
         wrapper.setTo(tx.getTo());
         wrapper.setInput(tx.getInput());
         wrapper.setNonce(tx.getNonce());
-        wrapper.setTransactionIndex(tx.getTransactionIndex());
-        System.out.println(tx.getValue());
-        if(tx.getValue().equals(BigInteger.ZERO)) {
-            wrapper.setValue("0");
-        } else {
-            wrapper.setValue(Convert.fromWei(tx.getValue().toString(), Unit.ETHER).toPlainString());
-        }
-
         // if u want to wrap more information, then add here
     }
 

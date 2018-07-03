@@ -100,6 +100,15 @@ Handlebars.registerHelper('displayGasUsage', function (blockInfo) {
   return (blockInfo.gasUsed / blockInfo.gasLimit * 100) + '%';
 });
 
+Handlebars.registerHelper('displayTxType', function (tx) {
+  if (!tx.to) {
+    return "Contract";
+  } else {
+    return "Tx";
+  }
+
+});
+
 Handlebars.registerHelper('displayDifficulty', function (difficulty) {
   if (!difficulty) {
     return '';
@@ -125,7 +134,8 @@ Handlebars.registerHelper('displayTimestamp', function (timestamp, type) {
   if (type == 'short') {
     return moment.unix(timestamp).fromNow();
   } else if (type == 'long') {
-    return new Handlebars.SafeString(''+ moment.unix(timestamp).format('YYYY.MM.DD HH:mm:ss') + '+UTC  ('+ moment.unix(timestamp).fromNow() + ')');
+    return new Handlebars.SafeString('' + moment.unix(timestamp).format('YYYY.MM.DD HH:mm:ss') + '+UTC  (' + moment.unix(
+        timestamp).fromNow() + ')');
   }
 });
 
@@ -142,15 +152,10 @@ Handlebars.registerHelper('displaySealfields', function (sealFields) {
   return ret;
 });
 
-Handlebars.registerHelper('', function (sealFields) {
-  if (!sealFields) {
-    return '';
+Handlebars.registerHelper('displayTxStatus', function (tx) {
+  if (tx.pending) {
+    return "Pending";
+  } else {
+    return (tx.status == '0x0') ? 'Fail' : 'Success';
   }
-  var ret = '';
-
-  for (var i = 0; i < sealFields.length; i++) {
-    ret += sealFields[i] + '<br/>';
-  }
-
-  return ret;
 });

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.explorer.dto.BlockchainDTO;
 import org.explorer.entity.BlockWrapper;
 import org.explorer.entity.PageListRequest;
+import org.explorer.entity.TransactionWrapper;
 import org.explorer.repository.BlockchainRepository;
 import org.explorer.util.BIUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,4 +78,20 @@ public class BlockchainService {
         }
     }
     // --tag block
+
+    // tag tx
+    public TransactionWrapper findOneTxByHash(String query) throws Exception {
+        TransactionWrapper tx = blockchainRepository.findOneTxByHash(query);
+
+        if (tx != null && !tx.isPending()) {
+            BigInteger bestBlockNumber = blockchainRepository.findBestBlockNumber();
+            tx.setConfirms(bestBlockNumber.subtract(tx.getBlockNumber()).toString());
+            BlockchainDTO blockchainDTO =  blockchainRepository.findOneBlockByNumber(tx.getBlockNumber(), false);
+            tx.setTimestamp(blockchainDTO.getBlock().getTimestamp());
+        }
+
+        return tx;
+    }
+
+    // --tag tx
 }

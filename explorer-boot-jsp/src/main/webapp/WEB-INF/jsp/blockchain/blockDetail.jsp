@@ -49,14 +49,20 @@
                 <tr>
                     <th>Miner:</th>
                     <td>{{block.miner}}</td>
-                    <th>Reward:</th>
-                    <td>TODO REWARD</td>
+                    <th>Total Tx Fees</th>
+                    <td>{{block.txFees}} ETH</td>
                 </tr>
                 <tr>
-                    <th>Tx Fees:</th>
-                    <td>TODO TX FEE</td>
                     <th>Tx / Uncles:</th>
                     <td>{{block.txCount}} / {{#getLength block.uncles 0}}{{/getLength}}</td>
+                    <th>Nonce or Step:</th>
+                    <td>
+                        {{#if block.nonce}}
+                        {{block.nonce}}
+                        {{else}}
+                        {{block.sealFields.[0]}}
+                        {{/if}}
+                    </td>
                 </tr>
                 <tr>
                     <th>Gas Limit:</th>
@@ -70,16 +76,6 @@
                     <th>Size:</th>
                     <td>{{block.size}} bytes</td>
                 </tr>
-                <tr>
-                    <th>Nonce or Step:</th>
-                    <td colspan="100%">
-                        {{#if block.nonce}}
-                            {{block.nonce}}
-                        {{else}}
-                            {{block.sealFields.[0]}}
-                        {{/if}}
-                    </td>
-                </tr>
                 </tbody>
             </table>
         </div>
@@ -89,7 +85,7 @@
     <div class="row">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#tx-tab" data-toggle="tab"># {{#getLength txns}}{{/getLength}} Txns</a>
+            <li class="active"><a href="#tx-tab" data-toggle="tab"># {{#getLength txns 0}}{{/getLength}} Txns</a>
             </li>
             <li><a href="#details-tab" data-toggle="tab">Details</a>
             </li>
@@ -113,8 +109,8 @@
                         <tbody>
                         {{#each txns}}
                         <tr>
-                            <td>{{hash}}</td>
-                            <td></td>
+                            <td><a href="/tx/{{hash}}">{{hash}}</a></td>
+                            <td>{{#displayTxType this}}{{/displayTxType}}</td>
                             <td><a href="#">{{from}}</a></td>
                             <td><a href="#">{{to}}</a></td>
                             <td>{{value}} ETH</td>
@@ -151,9 +147,9 @@
                             <th>Mix Hash or Signature</th>
                             <td>
                                 {{#if block.mixHash}}
-                                 {{block.mixHash}}
+                                {{block.mixHash}}
                                 {{else}}
-                                 {{block.sealFields.[1]}}
+                                {{block.sealFields.[1]}}
                                 {{/if}}
                             </td>
                         </tr>

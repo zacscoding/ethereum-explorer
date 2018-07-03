@@ -11,10 +11,10 @@ buildscript {
 }
 
 apply plugin: 'java'
+apply plugin: 'war'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'war'
 
 group = 'org.explorer'
 version = '0.0.1'
@@ -23,7 +23,9 @@ sourceCompatibility = 1.8
 war {
     baseName = 'eth-explorer'
 }
-/*sourceSets  {
+
+/*
+sourceSets {
     main {
         resources {
             srcDirs "src/main/resources", "src/main/webapp"

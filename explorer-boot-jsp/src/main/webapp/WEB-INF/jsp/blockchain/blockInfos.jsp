@@ -6,7 +6,7 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
-                <h1 class="page-header">Ethereum Blocks</h1>
+            <h1 class="page-header">Ethereum Blocks</h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -32,8 +32,8 @@
                                 Show
                                 <select id="btn-page-length">
                                     <option value="10">10</option>
-                                    <option value="20">20</option>
                                     <option value="30">30</option>
+                                    <option value="50" selected>50</option>
                                 </select>
                                 entries
                             </div>
@@ -161,7 +161,7 @@
 <script>
   $(function () {
     var start = 1;
-    var length = 10;
+    var length = 50;
     var subscribeError = false;
 
     var newBlockAlertDiv = $('#new-block-alert-div');
@@ -211,7 +211,9 @@
         },
         success : function (block) {
           console.log('success', block);
-          displayNewBlock(block);
+          if (block) {
+            displayNewBlock(block);
+          }
         },
         error   : function (jqxhr) {
           subscribeError = true;

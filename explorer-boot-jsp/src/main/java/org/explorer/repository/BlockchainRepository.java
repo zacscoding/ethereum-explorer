@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 import org.explorer.dto.BlockchainDTO;
 import org.explorer.entity.BlockWrapper;
+import org.explorer.entity.TransactionWrapper;
 import org.web3j.protocol.core.methods.response.EthBlock.Block;
 
 /**
@@ -13,6 +14,7 @@ import org.web3j.protocol.core.methods.response.EthBlock.Block;
  */
 public interface BlockchainRepository {
 
+    // tag block
     String getClientVersion() throws Exception;
 
     BigInteger findBestBlockNumber() throws Exception;
@@ -27,4 +29,10 @@ public interface BlockchainRepository {
     BlockchainDTO findOneBlockByNumber(BigInteger blockNumber, boolean includeTxns) throws Exception;
 
     BlockchainDTO findOneBlockByHash(String blockHash, boolean includeTxns) throws Exception;
+
+    // -- tag block
+
+    // tag tx
+    TransactionWrapper findOneTxByHash(String hash) throws Exception;
+    // -- tag tx
 }

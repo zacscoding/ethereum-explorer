@@ -33,6 +33,7 @@ public class BlockWrapper {
     private String transactionsRoot;
     private String logsBloom;
     private String mixHash;
+    private String txFees;
     private List<String> transactions;  // transactions hash list
     private List<String> uncles;        // uncles`s hash list
     private List<String> sealFields;    // seal fields

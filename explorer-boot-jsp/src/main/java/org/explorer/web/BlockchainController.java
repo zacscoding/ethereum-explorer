@@ -1,16 +1,18 @@
 package org.explorer.web;
 
-import ch.qos.logback.classic.Logger;
 import java.util.List;
-import jdk.nashorn.internal.objects.annotations.Getter;
+import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.explorer.aop.annotation.NoLogging;
 import org.explorer.aop.annotation.PreValidate;
+import org.explorer.configuration.properties.EthProperties;
 import org.explorer.dto.BlockchainDTO;
 import org.explorer.entity.BlockWrapper;
 import org.explorer.entity.PageListRequest;
+import org.explorer.entity.TransactionWrapper;
 import org.explorer.service.BlockchainService;
 import org.explorer.subscribe.BlockNotificationListener;
+import org.explorer.util.GsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -33,7 +35,7 @@ public class BlockchainController {
 
     @Value("${eth.block.time}")
     private long blockTime;
-    @Value("${eth.newblock.subscribe}")
+    @Value("${eth.subscribe.newblock}")
     private boolean subscribeBlocks;
 
     @Autowired
@@ -72,8 +74,10 @@ public class BlockchainController {
 
         deferredResult.onCompletion(() -> blockNotificationListener.unsubscribe(deferredResult));
         deferredResult.onError((throwable) -> blockNotificationListener.unsubscribe(deferredResult));
-        // deferredResult.onTimeout(() -> blockNotificationListener.unsubscribe(deferredResult));
-        deferredResult.onTimeout(() -> System.out.println("## timeout!"));
+        deferredResult.onTimeout(() -> {
+            blockNotificationListener.unsubscribe(deferredResult);
+            deferredResult.setResult(null);
+        });
 
         return deferredResult;
     }
@@ -83,6 +87,13 @@ public class BlockchainController {
     public ResponseEntity<Boolean> isSubscribe() {
         return ResponseEntity.ok(subscribeBlocks);
     }
+
+    @GetMapping(value="/blocks/time")
+    @ResponseBody
+    public ResponseEntity<Long> getBlockTime() {
+        return ResponseEntity.ok(EthProperties.getEthProperties().getBlock().getTime());
+    }
+
 
     @GetMapping("/blocks/data")
     @ResponseBody
@@ -113,6 +124,21 @@ public class BlockchainController {
     }
 
     // tag tx infos
+    @GetMapping("/tx/{query}")
+    public String txDetail(@PathVariable("query") String query) {
+        return "blockchain/txDetail";
+    }
+
+    @PostMapping("/tx/{query}")
+    public ResponseEntity<TransactionWrapper> getTx(@PathVariable("query") String query) {
+        try {
+            return ResponseEntity.ok().body(blockchainService.findOneTxByHash(query));
+        } catch (Exception e) {
+            log.error("failed to get block : " + query, e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     // -- tag tx infos
 
     // tag account infos
