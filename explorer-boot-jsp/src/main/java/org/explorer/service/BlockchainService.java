@@ -109,19 +109,14 @@ public class BlockchainService {
     // tag accounts
     public List<AccountWrapper> findAllAccounts(EthNode ethNode, PageListRequest pageRequest) throws Exception {
         List<String> addrs = blockchainRepository.findAllAccounts(ethNode);
-        System.out.println("## accounts size : " + addrs.size());
 
         int startIdx = (pageRequest.getStart() - 1) * pageRequest.getLength();
-        System.out.println("## start idx : " + startIdx);
 
         if (CollectionUtils.isEmpty(addrs) || startIdx > addrs.size() - 1) {
             return Collections.emptyList();
         }
 
         int lastIdx = Math.min((startIdx + pageRequest.getLength() - 1), addrs.size() - 1);
-        System.out.println("## calc last offset : " + (startIdx + pageRequest.getLength() - 1));
-        System.out.println("## lastIdx idx : " + lastIdx);
-        System.out.println("## addr size : " + addrs.size());
         if (startIdx == lastIdx) {
             addrs = Arrays.asList(addrs.get(startIdx));
         } else {
