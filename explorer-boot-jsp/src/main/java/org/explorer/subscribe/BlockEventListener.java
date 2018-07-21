@@ -1,5 +1,6 @@
 package org.explorer.subscribe;
 
+import org.explorer.entity.EthNode;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
 
@@ -10,7 +11,7 @@ import org.web3j.protocol.core.methods.response.Transaction;
  */
 public interface BlockEventListener {
 
-    void onBlock(EthBlock ethBlock);
+    void onBlock(EthNode ethNode, EthBlock ethBlock);
 
-    void onPendingTransaction(Transaction tx);
+    void onPendingTransaction(EthNode ethNode, Transaction tx);
 }

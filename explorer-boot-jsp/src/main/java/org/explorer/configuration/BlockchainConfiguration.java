@@ -1,54 +1,66 @@
 package org.explorer.configuration;
 
 import java.io.IOException;
-import java.rmi.server.ExportException;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.explorer.configuration.properties.EthProperties;
+import org.explorer.entity.EthNode;
 import org.explorer.subscribe.BlockEventListener;
 import org.explorer.subscribe.BlockNotificationListener;
+import org.explorer.util.GsonUtil;
+import org.explorer.web3j.Web3jFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.util.CollectionUtils;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.http.HttpService;
 
 /**
+ * Block chain configuration
+ *
  * @author zacconding
- * @Date 2018-06-17
+ * @Date 2018-07-21
  * @GitHub : https://github.com/zacscoding
  */
 @Slf4j
 @Configuration
 public class BlockchainConfiguration {
 
-    @Value("${eth.json.url}")
-    private String jsonRpcUrl;
-    private String clientVersion;
-
     @Autowired
     private TaskExecutor eventHandlerExecutor;
+    private List<EthNode> ethNodes;
 
+    @Autowired
+    public BlockchainConfiguration(EthProperties ethProperties) {
+        this.ethNodes = ethProperties.getNodes();
+        System.out.println("// =========================================================");
+        GsonUtil.printGsonPretty(ethNodes);
+        System.out.println("============================================================ //");
+    }
 
     @PostConstruct
-    private void initialize() {
-        blockObserve(web3j(), blockEventListeners());
+    private void setUp() {
+        initialize();
     }
 
     @Bean
-    public Web3j web3j() {
-        return Web3j.build(new HttpService(jsonRpcUrl));
+    public Web3jFactory web3jFactory() {
+        List<EthNode> ethNodes = ethNodes();
+
+        if (CollectionUtils.isEmpty(ethNodes)) {
+            log.warn("Eth Node is empty => Terminate");
+            System.exit(-1);
+        }
+
+        return new Web3jFactory();
     }
 
     @Bean
     public List<BlockEventListener> blockEventListeners() {
-        return Arrays.asList(
-            blockNotificationListener()
-        );
+        return Arrays.asList(blockNotificationListener());
     }
 
     @Bean
@@ -56,27 +68,37 @@ public class BlockchainConfiguration {
         return new BlockNotificationListener();
     }
 
-    public String getJsonRpcUrl() {
-        return jsonRpcUrl;
+    @Bean
+    public List<EthNode> ethNodes() {
+        return ethNodes;
     }
 
-    public String getClientVersion() {
-        return clientVersion;
-    }
+    private void initialize() {
+        List<EthNode> ethNodes = ethNodes();
+        Web3jFactory web3jFactory = web3jFactory();
+        List<BlockEventListener> blockEventListeners = blockEventListeners();
 
-    private void blockObserve(Web3j web3j, List<BlockEventListener> blockEventListeners) {
-        log.info("## Start to subscribe block event. listener : {}", blockEventListeners.size());
+        for (EthNode ethNode : ethNodes) {
+            Web3j web3j = web3jFactory.getWeb3j(ethNode);
 
-        if (!CollectionUtils.isEmpty(blockEventListeners)) {
-            web3j.blockObservable(true).subscribe(
-                (onNext -> {
+            // client version
+            String clientVersion = null;
+            try {
+                clientVersion = web3j.web3ClientVersion().send().getWeb3ClientVersion();
+            } catch (IOException e) {
+                clientVersion = "Connection error : " + e.getMessage();
+            }
+            ethNode.setClientVersion(clientVersion);
+
+            // subscribe
+            if (ethNode.getSubscribe().isBlock()) {
+                web3j.blockObservable(true).subscribe((onNext -> {
                     log.info("## receive new block {}({})", onNext.getBlock().getNumber().toString(10), onNext.getBlock().getHash());
-                    blockEventListeners.forEach(listener -> eventHandlerExecutor.execute(() -> listener.onBlock(onNext)));
-                }),
-                (onError -> {
+                    blockEventListeners.forEach(listener -> eventHandlerExecutor.execute(() -> listener.onBlock(ethNode, onNext)));
+                }), (onError -> {
                     log.error("Failed to subscribe block..", onError.getCause());
-                })
-            );
+                }));
+            }
         }
     }
 }

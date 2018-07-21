@@ -34,7 +34,6 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
-
 </head>
 
 <body>
@@ -49,43 +48,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Ethereum Explorer by zaccoding</a>
+            <a class="navbar-brand" href="/">Ethereum Explorer by zaccoding</a>
         </div>
         <!-- /.navbar-header -->
 
         <div class="navbar-default sidebar" role="navigation">
             <div class="sidebar-nav navbar-collapse">
                 <ul class="nav" id="side-menu">
-                    <li class="sidebar-search">
-                        <div class="input-group custom-search-form">
-                            <input type="text" class="form-control" placeholder="Search...">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                        </div>
-                        <!-- /input-group -->
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-dashboard fa-fw"></i>Blockchain<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="${context}/blocks">Blocks</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <%--<li>
-                        <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> HOME</a>
-                    </li>--%>
-                    <li>
-                        <a href="#"><i class="fa fa-slack"></i> JSON-RPC<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="${context}/json-rpc/parity">Parity</a>
-                            </li>
-                        </ul>
-                    </li>
                 </ul>
             </div>
             <!-- /.sidebar-collapse -->
@@ -109,3 +78,59 @@
     <script src="${context}/resources/js/moment.js"></script>
 
     <script src="${context}/resources/js/bignumber.js"></script>
+
+    <script id="side-menu-template" type="text/x-handlebars-template">
+        <li class="sidebar-search">
+            <div class="input-group custom-search-form">
+                <input type="text" class="form-control" placeholder="Search...">
+                <span class="input-group-btn">
+                <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+            </span>
+            </div>
+            <!-- /input-group -->
+        </li>
+        {{#each nodes}}
+        <li>
+            <a href="#"><span class="glyphicon glyphicon-chevron-right"></span>   {{nodeName}}<span class="fa arrow"></span></a>
+            <ul class="nav nav-second-level">
+                <li>
+                    <a href="${context}/{{nodeName}}/blocks"><i class="fa fa-bold"></i>&nbsp; Blocks</a>
+                </li>
+                <li>
+                    <a href="${context}/{{nodeName}}/accounts"><i class="fa fa-users"></i>&nbsp;Accounts</a>
+                </li>
+            </ul>
+        </li>
+        {{/each}}
+        <li>
+            <a href="#"><i class="fa fa-slack"></i> JSON-RPC<span class="fa arrow"></span></a>
+            <ul class="nav nav-second-level">
+                <li>
+                    <a href="${context}/json-rpc/parity">Parity</a>
+                </li>
+            </ul>
+        </li>
+    </script>
+
+    <script>
+      (function () {
+        $.ajax({
+          url    : "/nodes",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          method : 'GET',
+          success: function (nodes) {
+            var data = {};
+            data.ctx = '${context}';
+            data.nodes = nodes;
+            console.log(nodes);
+            handlebarsManager.printTemplate(data, $('#side-menu'), $('#side-menu-template'), 'append', null, null, true);
+          },
+          error  : function (jqxhr) {
+            console.log(jqxhr);
+            alert('error');
+          }
+        });
+      })();
+    </script>

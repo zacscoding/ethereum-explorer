@@ -1,22 +1,33 @@
 package org.explorer.repository;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.explorer.dto.BlockchainDTO;
+import org.explorer.dto.PageListRequest;
+import org.explorer.entity.AccountWrapper;
 import org.explorer.entity.BlockWrapper;
+import org.explorer.entity.EthNode;
 import org.explorer.entity.TransactionWrapper;
 import org.explorer.parser.BlockchainParser;
+import org.explorer.web3j.Web3jFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.spel.ast.OpOr;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlock.Block;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.utils.Convert;
+import org.web3j.utils.Convert.Unit;
 
 /**
  * @author zacconding
@@ -27,21 +38,24 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 public class JsonRpcBlockchainRepository implements BlockchainRepository {
 
     @Autowired
-    private Web3j web3j;
+    private Web3jFactory web3jFactory;
 
     @Override
-    public String getClientVersion() throws Exception {
+    public String getClientVersion(EthNode ethNode) throws Exception {
+        Web3j web3j = web3jFactory.getWeb3j(ethNode);
         return web3j.web3ClientVersion().send().getWeb3ClientVersion();
     }
 
     // tag block
     @Override
-    public BigInteger findBestBlockNumber() throws Exception {
+    public BigInteger findBestBlockNumber(EthNode ethNode) throws Exception {
+        Web3j web3j = web3jFactory.getWeb3j(ethNode);
         return web3j.ethBlockNumber().send().getBlockNumber();
     }
 
     @Override
-    public List<BlockWrapper> findAllBlocks(BigInteger startBlockNum, BigInteger lastBlockNum) throws Exception {
+    public List<BlockWrapper> findAllBlocks(EthNode ethNode, BigInteger startBlockNum, BigInteger lastBlockNum) throws Exception {
+        Web3j web3j = web3jFactory.getWeb3j(ethNode);
         int diff = (startBlockNum.compareTo(lastBlockNum) > 0) ? -1 : 1;
 
         int size = Math.abs(lastBlockNum.subtract(startBlockNum).intValue()) + 1;
@@ -60,7 +74,9 @@ public class JsonRpcBlockchainRepository implements BlockchainRepository {
     }
 
     @Override
-    public BlockchainDTO findOneBlockByNumber(BigInteger blockNumber, boolean includeTxns) throws Exception {
+    public BlockchainDTO findOneBlockByNumber(EthNode ethNode, BigInteger blockNumber, boolean includeTxns) throws Exception {
+        Web3j web3j = web3jFactory.getWeb3j(ethNode);
+
         Block block = null;
 
         if (blockNumber != null) {
@@ -71,7 +87,8 @@ public class JsonRpcBlockchainRepository implements BlockchainRepository {
     }
 
     @Override
-    public BlockchainDTO findOneBlockByHash(String blockHash, boolean includeTxns) throws Exception {
+    public BlockchainDTO findOneBlockByHash(EthNode ethNode, String blockHash, boolean includeTxns) throws Exception {
+        Web3j web3j = web3jFactory.getWeb3j(ethNode);
         Block block = null;
 
         if (StringUtils.hasText(blockHash)) {
@@ -86,7 +103,8 @@ public class JsonRpcBlockchainRepository implements BlockchainRepository {
     // tag tx
 
     @Override
-    public TransactionWrapper findOneTxByHash(String hash) throws Exception {
+    public TransactionWrapper findOneTxByHash(EthNode ethNode, String hash) throws Exception {
+        Web3j web3j = web3jFactory.getWeb3j(ethNode);
         TransactionWrapper wrapper = null;
 
         Optional<Transaction> optional = web3j.ethGetTransactionByHash(hash).send().getTransaction();
@@ -101,6 +119,20 @@ public class JsonRpcBlockchainRepository implements BlockchainRepository {
         }
 
         return wrapper;
+    }
+
+    @Override
+    public List<String> findAllAccounts(EthNode ethNode) throws Exception {
+        Web3j web3j = web3jFactory.getWeb3j(ethNode);
+
+        return web3j.ethAccounts().send().getAccounts();
+    }
+
+    @Override
+    public BigInteger getBalance(EthNode ethNode, String address, DefaultBlockParameter defaultBlockParameter) throws Exception {
+        Web3j web3j = web3jFactory.getWeb3j(ethNode);
+
+        return web3j.ethGetBalance(address, defaultBlockParameter).send().getBalance();
     }
 
     // -- tag tx

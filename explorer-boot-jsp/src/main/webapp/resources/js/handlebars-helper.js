@@ -1,5 +1,6 @@
 var handlebarsManager = (function () {
-  var printTemplate = function (data, target, templateObject, type, prefixHtml, suffixHtml, empty) {
+  var printTemplate = function (data, target, templateObject, type, prefixHtml,
+      suffixHtml, empty) {
 
     if (empty) {
       target.empty();
@@ -31,70 +32,71 @@ var handlebarsManager = (function () {
   }
 })();
 
-Handlebars.registerHelper('compare', function (lvalue, operator, rvalue, expected, options) {
-  //{{#compare @index '%' 10}}
-  var operators, result;
+Handlebars.registerHelper('compare',
+    function (lvalue, operator, rvalue, expected, options) {
+      //{{#compare @index '%' 10}}
+      var operators, result;
 
-  if (arguments.length < 3) {
-    throw new Error("Handlerbars Helper 'compare' needs 2 parameters");
-  }
+      if (arguments.length < 3) {
+        throw new Error("Handlerbars Helper 'compare' needs 2 parameters");
+      }
 
-  if (options === undefined) {
-    options = rvalue;
-    rvalue = operator;
-    operator = "===";
-  }
+      if (options === undefined) {
+        options = rvalue;
+        rvalue = operator;
+        operator = "===";
+      }
 
-  if (expected === undefined) {
-    expected = 0;
-  }
+      if (expected === undefined) {
+        expected = 0;
+      }
 
-  operators = {
-    '=='    : function (l, r) {
-      return l == r;
-    },
-    '==='   : function (l, r) {
-      return l === r;
-    },
-    '!='    : function (l, r) {
-      return l != r;
-    },
-    '!=='   : function (l, r) {
-      return l !== r;
-    },
-    '<'     : function (l, r) {
-      return l < r;
-    },
-    '>'     : function (l, r) {
-      return l > r;
-    },
-    '<='    : function (l, r) {
-      return l <= r;
-    },
-    '>='    : function (l, r) {
-      return l >= r;
-    },
-    'typeof': function (l, r) {
-      return typeof l == r;
-    },
-    '%'     : function (l, r) {
-      return l % r == expected;
-    }
-  };
+      operators = {
+        '=='    : function (l, r) {
+          return l == r;
+        },
+        '==='   : function (l, r) {
+          return l === r;
+        },
+        '!='    : function (l, r) {
+          return l != r;
+        },
+        '!=='   : function (l, r) {
+          return l !== r;
+        },
+        '<'     : function (l, r) {
+          return l < r;
+        },
+        '>'     : function (l, r) {
+          return l > r;
+        },
+        '<='    : function (l, r) {
+          return l <= r;
+        },
+        '>='    : function (l, r) {
+          return l >= r;
+        },
+        'typeof': function (l, r) {
+          return typeof l == r;
+        },
+        '%'     : function (l, r) {
+          return l % r == expected;
+        }
+      };
 
-  if (!operators[operator]) {
-    throw new Error("Handlerbars Helper 'compare' doesn't know the operator "
-        + operator);
-  }
+      if (!operators[operator]) {
+        throw new Error("Handlerbars Helper 'compare' doesn't know the operator "
+            + operator);
+      }
 
-  result = operators[operator](lvalue, rvalue);
+      result = operators[operator](lvalue, rvalue);
 
-  if (result) {
-    return options.fn(this);
-  } else {
-    return options.inverse(this);
-  }
-});
+      if (result) {
+        return options.fn(this);
+      } else {
+        return options.inverse(this);
+      }
+    });
 
 Handlebars.registerHelper('displayGasUsage', function (blockInfo) {
   return (blockInfo.gasUsed / blockInfo.gasLimit * 100) + '%';
@@ -134,7 +136,8 @@ Handlebars.registerHelper('displayTimestamp', function (timestamp, type) {
   if (type == 'short') {
     return moment.unix(timestamp).fromNow();
   } else if (type == 'long') {
-    return new Handlebars.SafeString('' + moment.unix(timestamp).format('YYYY.MM.DD HH:mm:ss') + '+UTC  (' + moment.unix(
+    return new Handlebars.SafeString('' + moment.unix(timestamp).format(
+        'YYYY.MM.DD HH:mm:ss') + '+UTC  (' + moment.unix(
         timestamp).fromNow() + ')');
   }
 });
@@ -158,4 +161,9 @@ Handlebars.registerHelper('displayTxStatus', function (tx) {
   } else {
     return (tx.status == '0x0') ? 'Fail' : 'Success';
   }
+});
+
+Handlebars.registerHelper('displayBootstrapClasses', function (idx) {
+  var classes = ['success', 'info', 'warning'];
+  return classes[(idx) % classes.length];
 });

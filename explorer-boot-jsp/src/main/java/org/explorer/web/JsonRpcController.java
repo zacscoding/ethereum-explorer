@@ -1,7 +1,9 @@
 package org.explorer.web;
 
 import com.google.gson.Gson;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.explorer.entity.EthNode;
 import org.explorer.entity.JsonRequestEntity;
 import org.explorer.entity.enums.ClientType;
 import org.explorer.service.JsonRpcService;

@@ -26,7 +26,8 @@
                             <form role="form">
                                 <div class="form-group">
                                     <label>URI</label>
-                                    <input class="form-control" id="uri" value="http://localhost:8540">
+                                    <select class="form-control" id="url">
+                                    </select>
                                 </div>
 
                                 <div class="form-group">
@@ -118,9 +119,9 @@
     <!-- Nav tabs -->
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab-all" data-toggle="tab">ALL</a>
-        {{#each .}}
+            {{#each .}}
         <li><a href="#tab-{{module}}" data-toggle="tab">{{module}}</a>
-        {{/each}}
+            {{/each}}
     </ul>
 
     <!-- Tab panes -->
@@ -131,17 +132,22 @@
             <h4>{{module}}</h4>
             <table border="0" style="width : 100%;">
                 {{#each methods}}
-                    {{#compare @index '%' 3 0}}<tr>{{/compare}}
+                {{#compare @index '%' 3 0}}
+                <tr>{{/compare}}
                     <td style="width:33%;">
                         <a href="#" class="tab-method" data-module="{{../module}}" data-method="{{this}}">
                             {{this}}
                         </a>
                     </td>
-                    {{#compare @index '%' 3 2}}</tr>{{/compare}}
+                    {{#compare @index '%' 3 2}}
+                </tr>
+                {{/compare}}
                 {{/each}}
 
                 {{#compare methods.length '%' 3 1}}
-                <td style="width:33%;"></td><td style="width:33%;"></td></tr>
+                <td style="width:33%;"></td>
+                <td style="width:33%;"></td>
+                </tr>
                 {{/compare}}
                 {{#compare methods.length '%' 3 2}}
                 <td style="width:33%;"></td>
@@ -156,15 +162,18 @@
         <div class="tab-pane fade" id="tab-{{module}}">
             <h4>{{module}}</h4>
             <table border="0" style="width : 100%;">
-            {{#each methods}}
-                {{#compare @index '%' 3 0}}<tr>{{/compare}}
-                <td>
-                    <a href="#" class="tab-method" data-module="{{../module}}" data-method="{{this}}">
-                        {{this}}
-                    </a>
-                </td>
-                {{#compare @index '%' 3 2}}</tr>{{/compare}}
-            {{/each}}
+                {{#each methods}}
+                {{#compare @index '%' 3 0}}
+                <tr>{{/compare}}
+                    <td>
+                        <a href="#" class="tab-method" data-module="{{../module}}" data-method="{{this}}">
+                            {{this}}
+                        </a>
+                    </td>
+                    {{#compare @index '%' 3 2}}
+                </tr>
+                {{/compare}}
+                {{/each}}
             </table>
         </div>
         {{/each}}
@@ -215,7 +224,6 @@
     var jsonResultDivObj = $('#accordion');
 
     // inputs
-    var uriObj = $('#uri');
     var jsonResultPretty = $('#json-result-pretty');
 
     var jsonRequestIdObj = $('#json_request_id');
@@ -282,7 +290,7 @@
       console.log(jsonRequest);
       if (!jsonRequest.url) {
         alert('Invalid url');
-        uriObj.focus();
+        $('#url').focus();
         return;
       }
 
@@ -327,7 +335,7 @@
       $('#method-select').val(selectedMethod).trigger('change');
 
       var offset = $(".page-header").offset();
-      $('html, body').animate({scrollTop : offset.top}, 400);
+      $('html, body').animate({scrollTop: offset.top}, 400);
     });
 
     $(document).on('click', ('#btn-json-result-clear'), function () {
@@ -352,6 +360,7 @@
     });*/
 
     (function () {
+      // parity json spec
       $.getJSON("${context}/json-rpc/parity/specs", function (data) {
         jsonRpcSpecs = data;
         console.log(data);
@@ -359,6 +368,17 @@
         handlebarsManager.printTemplate(jsonRpcSpecs, $('#json-rpc-specs-tab-body'), $('#json-rpc-tabs-template'), 'append', null, null, true);
         // display modules select box
         appendModuleSelect(data);
+      });
+
+      // eth nodes
+      $.getJSON("${context}/nodes", function (data) {
+        var html = '';
+        for (var i = 0, size = data.length; i < size; i++) {
+          var nodeUrl = data[i].rpc.url;
+          html += '<option value="' + nodeUrl + '">' + nodeUrl + '</option>';
+        }
+
+        $('#url').append(html);
       });
     })();
 
@@ -377,7 +397,7 @@
     function getJsonRequestData() {
       var request = {};
 
-      request.url = uriObj.val();
+      request.url = $('#url option:selected').val();
       request.method = method;
       if (jsonRequestIdObj.val()) {
         request.id = Number(jsonRequestIdObj.val());
@@ -391,7 +411,8 @@
       console.log(request.pretty);
       return request;
     }
-  });
+  })
+  ;
 </script>
 
 <jsp:include page="../common/footer.jsp" flush="true"/>

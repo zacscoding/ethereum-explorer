@@ -17,11 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Slf4j
 public class IndexController {
 
-    @GetMapping("/")
-    public String home() {
-        return "redirect:/blocks";
-    }
-
     @GetMapping("/page-test/{name}")
     public String test(@PathVariable("name") String viewName) {
         return "test/" + viewName;

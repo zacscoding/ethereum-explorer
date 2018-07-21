@@ -144,6 +144,7 @@
 </script>
 
 <script id="block-infos-template" type="text/x-handlebars-template">
+    {{#if this}}
     {{#each .}}
     <tr>
         <td><a href="block/{{number}}">{{number}}</a></td>
@@ -156,13 +157,21 @@
         <td>{{#getLength uncles 0}}{{/getLength}}</td>
     </tr>
     {{/each}}
+    {{else}}
+    <tr>
+        <td colspan="100%" align="center"><h4>No results</h4></td>
+    </tr>
+    {{/if}}
 </script>
 
 <script>
   $(function () {
     var start = 1;
     var length = 50;
+    var prevStart = start;
+    var prevLength = length;
     var subscribeError = false;
+    var nodeName;
 
     var newBlockAlertDiv = $('#new-block-alert-div');
     var newBlockDiv = $('#new-block-div');
@@ -189,7 +198,9 @@
     });
 
     (function () {
-      var url = '${context}/blocks/is-subscribe';
+      nodeName = window.location.pathname.split('/')[1];
+
+      var url = '${context}/' + nodeName + '/blocks/is-subscribe';
       $.getJSON(url, function (data) {
         if (data == true) {
           subscribeNewBlocks();
@@ -205,7 +216,7 @@
       }
 
       $.ajax({
-        url     : '/blocks/subscribe',
+        url     : '/' + nodeName + '/blocks/subscribe',
         headers : {
           "Content-Type": "application/json"
         },
@@ -232,10 +243,30 @@
     }
 
     function displayBlockInfos() {
-      var url = '${context}/blocks/data?start=' + start + '&length=' + length;
-      $.getJSON(url, function (data) {
-        console.log(data);
-        handlebarsManager.printTemplate(data, blockInfoBody, $('#block-infos-template'), 'append', null, null, true);
+      var url = '${context}/' + nodeName + '/blocks/data?start=' + start + '&length=' + length;
+      $.ajax({
+        url    : url,
+        headers: {
+          "Content-Type": "application/json"
+        },
+        method : 'GET',
+        success: function (data) {
+          console.log(data);
+          if (data && data.length > 0) {
+            prevStart = start;
+            prevLength = length;
+          } else {
+            start = prevStart;
+            length = prevLength;
+          }
+          handlebarsManager.printTemplate(data, blockInfoBody, $('#block-infos-template'), 'append', null, null, true);
+        },
+        error  : function (jqxhr) {
+          console.log(jqxhr);
+          alert('error');
+          start = prevStart;
+          length = prevLength;
+        }
       });
     }
   });

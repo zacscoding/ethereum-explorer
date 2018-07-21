@@ -1,5 +1,6 @@
 package org.explorer.subscribe;
 
+import org.explorer.entity.EthNode;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
 
@@ -11,10 +12,10 @@ import org.web3j.protocol.core.methods.response.Transaction;
 public class BlockEventListenrAdapter implements BlockEventListener {
 
     @Override
-    public void onBlock(EthBlock ethBlock) {
+    public void onBlock(EthNode ethNode, EthBlock ethBlock) {
     }
 
     @Override
-    public void onPendingTransaction(Transaction tx) {
+    public void onPendingTransaction(EthNode ethNode, Transaction tx) {
     }
 }

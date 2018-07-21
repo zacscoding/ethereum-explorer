@@ -1,4 +1,4 @@
-package org.explorer.entity;
+package org.explorer.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

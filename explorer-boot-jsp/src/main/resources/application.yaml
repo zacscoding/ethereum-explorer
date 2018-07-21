@@ -1,26 +1,3 @@
-# Ethereum Light Explorer
-
-## Explain
-
-- Multiple eth client's explorer
-
-
-## Plan
-- SpringBoot + JSP (now working..)  
-https://github.com/zacscoding/ethereum-explorer/tree/master/explorer-boot-jsp
-- SpringBoot(Server) + AngularJS(Client)
-- AngularJS(Server + Client)
-- NodeJS(Server + Client)
-
-## demo  
-
-![demo](./images/demo.gif)
-
-## configuration
-
-> spring boot  
-
-```
 ## Spring configuration
 spring:
   mvc:
@@ -46,7 +23,7 @@ logging:
 eth :
   nodes:
     -
-      nodeName: parity-1      
+      nodeName: parity-1
       rpc:
         type: json
         url: http://192.168.79.128:8540/
@@ -63,4 +40,3 @@ eth :
         time: 15000
       subscribe:
         block: true
-```
