@@ -20,23 +20,13 @@ logging:
 
 ## Ethereum
 ## TODO :: add websocket after web3j release
-eth :
+eth:
   nodes:
-    -
-      nodeName: parity-1
-      rpc:
-        type: json
-        url: http://192.168.79.128:8540/
-      block:
-        time: 15000
-      subscribe:
-        block: true
-    -
-      nodeName: parity-2
-      rpc:
-        type: json
-        url: http://192.168.79.128:8541/
-      block:
-        time: 15000
-      subscribe:
-        block: true
+  - nodeName: parity-1
+    rpc:
+      type: websocket
+      url: http://192.168.5.77:8450/
+    block:
+      time: 15000
+    subscribe:
+      block: true

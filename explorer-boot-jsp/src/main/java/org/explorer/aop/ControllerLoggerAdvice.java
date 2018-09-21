@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
  * @GitHub : https://github.com/zacscoding
  */
 @Slf4j
-@Component
-@Aspect
+// @Component
+// @Aspect
 public class ControllerLoggerAdvice {
 
     @Around("execution(* org.explorer.web.*Controller.*(..))"

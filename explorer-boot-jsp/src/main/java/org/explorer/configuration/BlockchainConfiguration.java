@@ -10,6 +10,7 @@ import org.explorer.entity.EthNode;
 import org.explorer.subscribe.BlockEventListener;
 import org.explorer.subscribe.BlockNotificationListener;
 import org.explorer.util.GsonUtil;
+import org.explorer.web3j.DefaultWeb3jFactory;
 import org.explorer.web3j.Web3jFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -55,7 +56,7 @@ public class BlockchainConfiguration {
             System.exit(-1);
         }
 
-        return new Web3jFactory();
+        return new DefaultWeb3jFactory();
     }
 
     @Bean
